@@ -1,0 +1,41 @@
+.container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.score {
+    display: flex;
+    justify-content: space-between;
+    font-family: "VT323 Static", serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: Regular 400;
+}
+
+.currentScore {
+    color: #7F8A61;
+}
+
+.highScore {
+    color: #BCC799; 
+}
+
+.board {
+    background: #A2AD81;
+    height: 600px;
+    width: 600px;
+    border: solid #4D513C 10px;
+    border-radius: 5%;
+}
+
+.playground {
+    background: #BCC799;
+    border: solid  #7F8A61 40px;
+    border-radius: 2%;
+    margin: 8px;
+
+    height: 506px;
+}
