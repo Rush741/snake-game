@@ -5,15 +5,16 @@ const GRID_SIZE = 15;
 const GAMEGRID = Array.from({ length: GRID_SIZE }, () =>
   new Array(GRID_SIZE).fill("")
 );
+const INITIAL_SNAKE = [
+        [5, 4],
+        [5, 3],
+        [5, 2]
+    ];
 
 
 const SnakeGame = () => {
 
-    const [snakeBody, setSnakeBody] = useState([
-        [5, 4],
-        [5, 3],
-        [5, 2]
-    ]);
+    const [snakeBody, setSnakeBody] = useState(INITIAL_SNAKE);
     let directionRef = useRef([0, 1]);
     let directionLockedRef = useRef(false);
     
@@ -31,7 +32,7 @@ const SnakeGame = () => {
 
         return [x, y]; 
     }
-    
+
     let foodRef = useRef(null);
     if (foodRef.current === null) {
         foodRef.current = generateFood(snakeBody);
@@ -79,13 +80,10 @@ const SnakeGame = () => {
                 
                 const newHead = [newSnakeBody[0][0] + directionRef.current[0], newSnakeBody[0][1] + directionRef.current[1]];
                 
-                if(newHead[0]<0 || newHead[0]>=GRID_SIZE || newHead[1]<0 || newHead[1]>=GRID_SIZE) {
+                if(newHead[0]<0 || newHead[0]>=GRID_SIZE || newHead[1]<0 || newHead[1]>=GRID_SIZE || prevSnakeBody.some(([x, y]) => x === newHead[0] && y === newHead[1])) {
                     
-                    setSnakeBody([
-                        [5, 4],
-                        [5, 3],
-                        [5, 2]
-                    ]);         
+                    //RESET CODE
+                    setSnakeBody(INITIAL_SNAKE);         
 
                     directionRef.current = [0, 1];
                     directionLockedRef.current = false;
