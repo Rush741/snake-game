@@ -53,6 +53,7 @@
 
 .snakeBodyDiv {
     background-color: aquamarine;
+    border: solid #698716 2px;
 }
 
 .foodBodyDiv {

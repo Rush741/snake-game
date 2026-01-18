@@ -17,13 +17,25 @@ const SnakeGame = () => {
     let directionRef = useRef([0, 1]);
     let directionLockedRef = useRef(false);
     
-    const generateFood = () => {
-        let x = Math.floor(Math.random()*GRID_SIZE);
-        let y = Math.floor(Math.random()*GRID_SIZE);
-        return [x, y];
+    const generateFood = (snakeBody) => { 
+        let x, y; 
+        let onSnakeBody = true; 
+        
+        while(onSnakeBody) { 
+            x = Math.floor(Math.random()*GRID_SIZE); 
+            y = Math.floor(Math.random()*GRID_SIZE); 
+            // eslint-disable-next-line
+            onSnakeBody = snakeBody.some( 
+                ([r, c]) => r === x && c === y ); 
+        } 
+
+        return [x, y]; 
     }
-    let foodRef = useRef(generateFood());
     
+    let foodRef = useRef(null);
+    if (foodRef.current === null) {
+        foodRef.current = generateFood(snakeBody);
+    }
 
     const isSnakeBodyDiv = (rowIndex, colIndex) => {
         return snakeBody.some(
@@ -69,14 +81,15 @@ const SnakeGame = () => {
                 
                 if(newHead[0]<0 || newHead[0]>=GRID_SIZE || newHead[1]<0 || newHead[1]>=GRID_SIZE) {
                     
-                    directionRef.current = [0, 1];
-                    directionLockedRef.current = false;
-                    
-                    return [
+                    setSnakeBody([
                         [5, 4],
                         [5, 3],
                         [5, 2]
-                    ];                    
+                    ]);         
+
+                    directionRef.current = [0, 1];
+                    directionLockedRef.current = false;
+                    
                 }
 
 
@@ -85,7 +98,7 @@ const SnakeGame = () => {
                     newHead[1] === foodRef.current[1];
 
                 if (ateFood) {
-                    foodRef.current = generateFood();
+                    foodRef.current = generateFood(prevSnakeBody);
                 } else {
                     newSnakeBody.pop();
                 }
@@ -95,7 +108,7 @@ const SnakeGame = () => {
                 directionLockedRef.current = false;
                 return newSnakeBody;
             })
-        }, 1000);
+        }, 100);
         
         
         return () => {
