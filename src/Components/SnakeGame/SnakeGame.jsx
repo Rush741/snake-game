@@ -16,9 +16,14 @@ const SnakeGame = () => {
     ]);
     let directionRef = useRef([0, 1]);
     let directionLockedRef = useRef(false);
-    // let [lock, setLock] = useState(false);
-
-
+    
+    const generateFood = () => {
+        let x = Math.floor(Math.random()*GRID_SIZE);
+        let y = Math.floor(Math.random()*GRID_SIZE);
+        return [x, y];
+    }
+    let foodRef = useRef(generateFood());
+    
 
     const isSnakeBodyDiv = (rowIndex, colIndex) => {
         return snakeBody.some(
@@ -26,12 +31,9 @@ const SnakeGame = () => {
         );
     }
 
-    // const gamePause = () => {
-    //     setLock(true);
-    // }
-
 
     useEffect(() => {
+
         const handleKeyDown = (e) => {
             if(directionLockedRef.current) return;
             const [dx, dy] = directionRef.current;
@@ -42,45 +44,64 @@ const SnakeGame = () => {
                 directionLockedRef.current = true;
                 break;
             case "ArrowDown":
-                directionLockedRef.current = true;
                 if(dx !== -1) directionRef.current = [1, 0];
+                directionLockedRef.current = true;
                 break;
             case "ArrowLeft":
-                directionLockedRef.current = true;
                 if(dy !== 1) directionRef.current = [0, -1];
+                directionLockedRef.current = true;
                 break;
             case "ArrowRight":
-                directionLockedRef.current = true;
                 if(dy !== -1) directionRef.current = [0, 1];
+                directionLockedRef.current = true;
                 break;
             default:
                 break;
             }
         };
         window.addEventListener("keydown", handleKeyDown);
-
+        
         const interval = setInterval(() => {
             setSnakeBody((prevSnakeBody) => {
                 const newSnakeBody = prevSnakeBody.map((arr) => [...arr]);
-                newSnakeBody.pop();
+                
                 const newHead = [newSnakeBody[0][0] + directionRef.current[0], newSnakeBody[0][1] + directionRef.current[1]];
+                
                 if(newHead[0]<0 || newHead[0]>=GRID_SIZE || newHead[1]<0 || newHead[1]>=GRID_SIZE) {
-                    setSnakeBody([
+                    
+                    directionRef.current = [0, 1];
+                    directionLockedRef.current = false;
+                    
+                    return [
                         [5, 4],
                         [5, 3],
                         [5, 2]
-                    ]);
-                    directionRef.current = [0, 1];
-                    directionLockedRef.current = false;
+                    ];                    
                 }
+
+
+                const ateFood =
+                    newHead[0] === foodRef.current[0] &&
+                    newHead[1] === foodRef.current[1];
+
+                if (ateFood) {
+                    foodRef.current = generateFood();
+                } else {
+                    newSnakeBody.pop();
+                }
+                
                 newSnakeBody.unshift(newHead);
                 
                 directionLockedRef.current = false;
                 return newSnakeBody;
             })
         }, 1000);
-
-        return () => clearInterval(interval);
+        
+        
+        return () => {
+            clearInterval(interval);
+            window.removeEventListener("keydown", handleKeyDown)
+        }
     }, []);
   return (
     <div className="container">
@@ -94,7 +115,7 @@ const SnakeGame = () => {
                     {GAMEGRID.map((row, rowIndex) => (
                         <div className="row" key={rowIndex}>
                             {row.map((cell, colIndex) => (
-                                <div className={`cell ${isSnakeBodyDiv(rowIndex, colIndex)? "snakeBodyDiv": ""}`} key={colIndex}>
+                                <div className={`cell ${isSnakeBodyDiv(rowIndex, colIndex)? "snakeBodyDiv": ""} ${foodRef.current[0] === rowIndex && foodRef.current[1] === colIndex? "foodBodyDiv": ""}`} key={colIndex}>
                                     
                                 </div>
                             ))}

@@ -54,3 +54,8 @@
 .snakeBodyDiv {
     background-color: aquamarine;
 }
+
+.foodBodyDiv {
+    background-color: red;
+    border-radius: 40%;
+}
