@@ -54,18 +54,26 @@ const SnakeGame = () => {
 
             switch (e.key) {
             case "ArrowUp":
+            case "w":
+            case "W":            
                 if(dx !== 1) directionRef.current = [-1, 0];
                 directionLockedRef.current = true;
                 break;
             case "ArrowDown":
+            case "s":
+            case "S":       
                 if(dx !== -1) directionRef.current = [1, 0];
                 directionLockedRef.current = true;
                 break;
             case "ArrowLeft":
+            case "a":
+            case "A":       
                 if(dy !== 1) directionRef.current = [0, -1];
                 directionLockedRef.current = true;
                 break;
             case "ArrowRight":
+            case "d":
+            case "D":       
                 if(dy !== -1) directionRef.current = [0, 1];
                 directionLockedRef.current = true;
                 break;
@@ -86,6 +94,7 @@ const SnakeGame = () => {
                     //RESET CODE
                     highScore = Math.max(highScore, scoreRef.current);
                     scoreRef.current = 0;
+                    
                     setSnakeBody(INITIAL_SNAKE);         
 
                     directionRef.current = [0, 1];
@@ -110,7 +119,7 @@ const SnakeGame = () => {
                 directionLockedRef.current = false;
                 return newSnakeBody;
             })
-        }, 100);
+        }, 300);
         
         
         return () => {
