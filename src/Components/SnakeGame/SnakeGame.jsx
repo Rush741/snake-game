@@ -10,6 +10,7 @@ const INITIAL_SNAKE = [
         [5, 3],
         [5, 2]
     ];
+let highScore = 0;
 
 
 const SnakeGame = () => {
@@ -17,6 +18,7 @@ const SnakeGame = () => {
     const [snakeBody, setSnakeBody] = useState(INITIAL_SNAKE);
     let directionRef = useRef([0, 1]);
     let directionLockedRef = useRef(false);
+    let scoreRef = useRef(0);
     
     const generateFood = (snakeBody) => { 
         let x, y; 
@@ -26,8 +28,7 @@ const SnakeGame = () => {
             x = Math.floor(Math.random()*GRID_SIZE); 
             y = Math.floor(Math.random()*GRID_SIZE); 
             // eslint-disable-next-line
-            onSnakeBody = snakeBody.some( 
-                ([r, c]) => r === x && c === y ); 
+            onSnakeBody = snakeBody.some(([r, c]) => r === x && c === y ); 
         } 
 
         return [x, y]; 
@@ -83,6 +84,8 @@ const SnakeGame = () => {
                 if(newHead[0]<0 || newHead[0]>=GRID_SIZE || newHead[1]<0 || newHead[1]>=GRID_SIZE || prevSnakeBody.some(([x, y]) => x === newHead[0] && y === newHead[1])) {
                     
                     //RESET CODE
+                    highScore = Math.max(highScore, scoreRef.current);
+                    scoreRef.current = 0;
                     setSnakeBody(INITIAL_SNAKE);         
 
                     directionRef.current = [0, 1];
@@ -96,6 +99,7 @@ const SnakeGame = () => {
                     newHead[1] === foodRef.current[1];
 
                 if (ateFood) {
+                    scoreRef.current = scoreRef.current+1;
                     foodRef.current = generateFood(prevSnakeBody);
                 } else {
                     newSnakeBody.pop();
@@ -115,23 +119,25 @@ const SnakeGame = () => {
         }
     }, []);
   return (
-    <div className="container">
-        <div className="boardContainer">
-            <div className="score">
-                <h1 className="currentScore">000</h1>
-                <h1 className="highScore">000</h1>
-            </div>
-            <div className="board">
-                <div className="playground">
-                    {GAMEGRID.map((row, rowIndex) => (
-                        <div className="row" key={rowIndex}>
-                            {row.map((cell, colIndex) => (
-                                <div className={`cell ${isSnakeBodyDiv(rowIndex, colIndex)? "snakeBodyDiv": ""} ${foodRef.current[0] === rowIndex && foodRef.current[1] === colIndex? "foodBodyDiv": ""}`} key={colIndex}>
-                                    
-                                </div>
-                            ))}
-                        </div>
-                    ))}
+    <div className="snake-game">
+        <div className="container">
+            <div className="boardContainer">
+                <div className="score">
+                    <h1 className="currentScore">Score: {scoreRef.current*10}</h1>
+                    <h1 className="highScore">Top Score: {highScore*10}</h1>
+                </div>
+                <div className="board">
+                    <div className="playground">
+                        {GAMEGRID.map((row, rowIndex) => (
+                            <div className="row" key={rowIndex}>
+                                {row.map((cell, colIndex) => (
+                                    <div className={`cell ${isSnakeBodyDiv(rowIndex, colIndex)? "snakeBodyDiv": ""} ${foodRef.current[0] === rowIndex && foodRef.current[1] === colIndex? "foodBodyDiv": ""}`} key={colIndex}>
+                                        
+                                    </div>
+                                ))}
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>
